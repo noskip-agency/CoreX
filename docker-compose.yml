@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  app:
+    image: dunglas/frankenphp:latest-php8.3
+    container_name: corex-app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - SERVER_NAME=:80
+    command: ["php", "artisan", "octane:frankenphp", "--host=0.0.0.0", "--port=80"]
+    depends_on:
+      - postgres
+      - dragonfly
+    networks:
+      - corex-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: corex-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: corex
+      POSTGRES_USER: corex
+      POSTGRES_PASSWORD: corex_secret
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - corex-network
+
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    container_name: corex-dragonfly
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - dragonfly-data:/data
+    networks:
+      - corex-network
+
+volumes:
+  postgres-data:
+  dragonfly-data:
+
+networks:
+  corex-network:
+    driver: bridge
