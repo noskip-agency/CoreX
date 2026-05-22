@@ -1,0 +1,1 @@
+# CoreX - CRM Multitenant SaaS
