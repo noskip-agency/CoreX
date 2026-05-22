@@ -15,7 +15,7 @@ services:
     command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
     depends_on:
       - postgres
-      - dragonfly
+      - redis
     networks:
       - corex-network
 
@@ -34,20 +34,20 @@ services:
     networks:
       - corex-network
 
-  dragonfly:
-    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
-    container_name: corex-dragonfly
+  redis:
+    image: redis:7-alpine
+    container_name: corex-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
-      - dragonfly-data:/data
+      - redis-data:/data
     networks:
       - corex-network
 
 volumes:
   postgres-data:
-  dragonfly-data:
+  redis-data:
 
 networks:
   corex-network:
