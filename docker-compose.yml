@@ -2,18 +2,17 @@ version: '3.8'
 
 services:
   app:
-    image: dunglas/frankenphp:latest-php8.3
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: corex-app
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "80:8000"
     volumes:
       - .:/app
     working_dir: /app
-    environment:
-      - SERVER_NAME=:80
-    command: ["php", "artisan", "octane:frankenphp", "--host=0.0.0.0", "--port=80"]
+    command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
     depends_on:
       - postgres
       - dragonfly
